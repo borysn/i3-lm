@@ -19,7 +19,8 @@
  *
  */
 
-const exec = require('child_process').exec;
+const fs = require('fs');
+const execSync = require('child_process').execSync;
 const script = require('commander');
 const chalk = require('chalk');
 
@@ -61,7 +62,25 @@ const chalk = require('chalk');
     .command('load <workspace> <file>')
     .alias('l')
     .action((workspace, file) => {
+      if (isValidWorkspace(workspace) && isValidFile(file)) {
+        load(workspace, file);
+      } else {
+        console.log(chalk.red('[Error] invalid file selected'));
+      }
     });
+
+  /**
+   * load
+   *
+   * assuming num is a valid workspace number
+   * assuming file is a readable file
+   *
+   * load :: num, file => String
+   */
+  var load = (num, file) => {
+    // exec save command
+    execSync(getLoadCmd(num, file));
+  };
 
   /**
    * save
@@ -71,17 +90,53 @@ const chalk = require('chalk');
    * save :: num => String
    */
   var save = (num) => {
-    // exec save command
-    exec(getSaveCmd(num), (err, stdout, stderr) => {
+    execSync(getSaveCmd(num));
+    // edit layout file
+    editLayout(`~/.config/i3/layouts/workspace_${num}.json`);
+  };
+
+  /**
+   * getUserHome
+   *
+   * get user home
+   *
+   * getUserHome :: () -> String
+   */
+  var getUserHome = () => {
+    return process.env.HOME || process.env.USERPROFILE;
+  };
+  
+  /**
+   * edit layout
+   *
+   */
+  var editLayout = (file) => {
+    const f = file.replace('~', getUserHome());
+    fs.readFile(f, (err, fd) => {
       if (err) {
-        // catch error
-        console.err(err);
-      } else if (stdout) {
-        // catch stdout
-        console.log(stdout);
-      } else if (stderr) {
-        // catch stderr
-        console.err(stderr);
+        console.log(chalk.red(`${err}`));
+        console.log(chalk.red('[Error] Cannot read file'));
+        process.exit(1);
+      } else {
+        // modify file contents & write
+        // replace "// " before "class"
+        // replace "// " before "instance"
+        // replace "// " before "title"
+        // replace "// " before "transient_for"
+        const data = fd.toString()
+          .replace('// "class"', '"class"')
+          .replace('// "instance"', '"instance"')
+          .replace('// "title"', '"title"')
+          .replace('// "transient_for"', '"transient_for"');
+
+        console.log(data);
+
+        fs.writeFile(f, data, 'utf8', (err) => {
+            if (err) {
+              console.log(chalk.red(`${err}`));
+              process.exit(1);
+            } 
+          });
       }
     });
   };
@@ -101,12 +156,39 @@ const chalk = require('chalk');
   };
 
   /**
+   * isValidFile
+   *
+   * f(file)
+   *
+   * isValidFile :: file -> bool
+   */
+  var isValidFile = (file) => {
+    // check read access
+    try {
+      fs.accessSync(file, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK)
+    } catch (e) {
+      console.log(chalk.red('Cannot access file. Check path or permissions.'));
+      return false;
+    }
+    return true;
+  };
+
+  /**
    * getSaveCmd
    *
    * getSaveCmd :: num -> String
    */
   var getSaveCmd = (num) => {
-   return `i3-save-tree --workspace ${num} > ~/.config/i3/layouts/workspace_${num}.json`;
+   return `i3-save-tree --workspace ${num} > ~/.config/i3/layouts/workspace_${num}.json`.toString();
+  };
+
+  /**
+   * getLoadCmd
+   *
+   * getLoadCmd :: num, file -> String
+   */
+  var getLoadCmd = (num, file) => {
+    return `i3-msg "workspace ${num}; append_layout ${file}"`.toString();
   };
 
   /**
