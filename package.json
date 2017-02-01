@@ -1,0 +1,22 @@
+{
+  "name": "i3-lm",
+  "version": "1.0.0",
+  "description": "save and load layouts for i3wm",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github:borysn/i3-lm"
+  },
+  "keywords": [
+    "nodejs",
+    "i3wm"
+  ],
+  "author": "borysn",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.9.0"
+  }
+}

@@ -1,2 +1,2 @@
-# i3-save-load-layout
+# i3-lm
 save and load layouts for i3wm
