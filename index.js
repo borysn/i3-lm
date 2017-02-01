@@ -33,7 +33,7 @@ const chalk = require('chalk');
    * script version 
    */
   script
-    .version('1.0.0')
+    .version('1.0.0');
 
   /**
    * save command
@@ -111,7 +111,9 @@ const chalk = require('chalk');
    *
    */
   var editLayout = (file) => {
+    // resolve ~ for full path
     const f = file.replace('~', getUserHome());
+    // read file
     fs.readFile(f, (err, fd) => {
       if (err) {
         console.log(chalk.red(`${err}`));
@@ -124,10 +126,10 @@ const chalk = require('chalk');
         // replace "// " before "title"
         // replace "// " before "transient_for"
         const data = fd.toString()
-          .replace('// "class"', '"class"')
-          .replace('// "instance"', '"instance"')
-          .replace('// "title"', '"title"')
-          .replace('// "transient_for"', '"transient_for"');
+          .replace(/\/\/\s\"class\"/g,'"class"')
+          .replace(/\/\/\s\"instance\"/g, '"instance"')
+          .replace(/\/\/\s\"title\"/g, '"title"')
+          .replace(/\/\/\s\"transient_for\"/g, '"transient_for"');
 
         console.log(data);
 
