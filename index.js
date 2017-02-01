@@ -23,7 +23,16 @@ const script = require('commander');
 
 (function() {
 
+  script
+    .version('1.0.0')
+    .option('-s, --save <workspace #>', 'Save layout')
+    .option('-l, --load <workspace #> <layout.json>', 'Load layout')
+    .option('-h, --help', 'show help')
+    .parse(process.argv);
 
-
+  console.log(script);
+  console.log(script.save);
+  console.log(script.load);
+  console.log(script.help);
 
 })();

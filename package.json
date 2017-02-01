@@ -4,6 +4,7 @@
   "description": "save and load layouts for i3wm",
   "main": "index.js",
   "scripts": {
+    "script": "./index.js",
     "test": "test"
   },
   "repository": {
