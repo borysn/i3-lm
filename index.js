@@ -183,7 +183,7 @@ const chalk = require('chalk');
    * isValidFile :: file -> bool
    */
   var isValidFile = (file) => {
-    // check read access
+    // check exists/read/write 
     try {
       fs.accessSync(file, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK)
     } catch (e) {
