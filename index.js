@@ -78,8 +78,12 @@ const chalk = require('chalk');
    * load :: num, file => String
    */
   var load = (num, file) => {
+    // change cwd to ~
+    process.chdir(getUserHome());
     // exec save command
     execSync(getLoadCmd(num, file));
+    // restore
+    restoreUrxvt();
   };
 
   /**
@@ -94,6 +98,22 @@ const chalk = require('chalk');
     // edit layout file
     editLayout(`~/.config/i3/layouts/workspace_${num}.json`);
   };
+
+  /**
+   * restoreUrvxt
+   *
+   * restore urxvt busy layout
+   *
+   */
+  var restoreUrxvt = () => {
+    let cmd = '$(urxvt &)';
+    cmd += ' && $(urxvt &)';
+    cmd += ' && $(urxvt &)';
+    cmd += ' && $(urxvt &)';
+    cmd += ' && $(urxvt -e cmus &)';
+    cmd += ' && $(urxvt -e cava &)';
+    execSync(cmd);
+  }
 
   /**
    * getUserHome
@@ -130,8 +150,6 @@ const chalk = require('chalk');
           .replace(/\/\/\s\"instance\"/g, '"instance"')
           .replace(/\/\/\s\"title\"/g, '"title"')
           .replace(/\/\/\s\"transient_for\"/g, '"transient_for"');
-
-        console.log(data);
 
         fs.writeFile(f, data, 'utf8', (err) => {
             if (err) {
