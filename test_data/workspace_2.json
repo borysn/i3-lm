@@ -140,7 +140,7 @@
                        {
                        "class": "^URxvt$",
                        "instance": "^urxvt$",
-                       "title": "^cmus"
+                       "title": "^p3pt@abnd:.*$"
                        //"transient_for": "^$"
                        }
                     ],
@@ -162,7 +162,7 @@
                        {
                        "class": "^URxvt$",
                        "instance": "^urxvt$",
-                       "title": "^cava$"
+                       "title": "^p3pt@abnd:.*$"
                        //"transient_for": "^$"
                        }
                     ],
