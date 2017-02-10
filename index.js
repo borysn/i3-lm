@@ -20,6 +20,7 @@
  */
 
 const fs = require('fs');
+const path = require('path');
 const execSync = require('child_process').execSync;
 const script = require('commander');
 const chalk = require('chalk');
@@ -32,8 +33,7 @@ const chalk = require('chalk');
   /**
    * script version 
    */
-  script
-    .version('1.0.0');
+  script.version('1.0.0');
 
   /**
    * save command
@@ -63,7 +63,7 @@ const chalk = require('chalk');
     .alias('l')
     .action((workspace, file) => {
       if (isValidWorkspace(workspace) && isValidFile(file)) {
-        load(workspace, file);
+        load(workspace, path.resolve(file));
       } else {
         console.log(chalk.red('[Error] invalid file selected'));
       }
@@ -78,8 +78,6 @@ const chalk = require('chalk');
    * load :: num, file => String
    */
   var load = (num, file) => {
-    // change cwd to ~
-    process.chdir(getUserHome());
     // exec save command
     execSync(getLoadCmd(num, file));
     // restore
@@ -110,31 +108,18 @@ const chalk = require('chalk');
     cmd += ' && $(urxvt &)';
     cmd += ' && $(urxvt &)';
     cmd += ' && $(urxvt &)';
-    cmd += ' && $(urxvt -e cmus &)';
-    cmd += ' && $(urxvt -e cava &)';
+    cmd += ' && $(urxvt &)';
+    cmd += ' && $(urxvt &)';
     execSync(cmd);
   }
 
-  /**
-   * getUserHome
-   *
-   * get user home
-   *
-   * getUserHome :: () -> String
-   */
-  var getUserHome = () => {
-    return process.env.HOME || process.env.USERPROFILE;
-  };
-  
   /**
    * edit layout
    *
    */
   var editLayout = (file) => {
-    // resolve ~ for full path
-    const f = file.replace('~', getUserHome());
     // read file
-    fs.readFile(f, (err, fd) => {
+    fs.readFile(file, (err, fd) => {
       if (err) {
         console.log(chalk.red(`${err}`));
         console.log(chalk.red('[Error] Cannot read file'));
