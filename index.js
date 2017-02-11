@@ -132,9 +132,9 @@ const chalk = require('chalk');
         // replace "// " before "transient_for"
         const data = fd.toString()
           .replace(/\/\/\s\"class\"/g,'"class"')
-          .replace(/\/\/\s\"instance\"/g, '"instance"')
-          .replace(/\/\/\s\"title\"/g, '"title"')
-          .replace(/\/\/\s\"transient_for\"/g, '"transient_for"');
+          .replace(/\/\/\s\"instance\"/g, '"instance"');
+          //.replace(/\/\/\s\"title\"/g, '"title"')
+          //.replace(/\/\/\s\"transient_for\"/g, '"transient_for"');
 
         fs.writeFile(f, data, 'utf8', (err) => {
             if (err) {
