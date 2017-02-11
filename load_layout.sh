@@ -1,6 +1,13 @@
 #!/bin/bash
+#
+# load i3 layout 
+#
+# $ load_layout WORKSPACENUM JSON
 
-i3-msg "workspace 2; append_layout /home/p3pt/.config/i3/layouts/workspace_2.json"
+JSON=$(realpath $2)
+NUM=$1
+
+i3-msg "workspace $NUM; append_layout $JSON"
 
 (urxvt &)
 (urxvt &)
