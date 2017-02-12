@@ -1,6 +1,4 @@
-// vim:ts=4:sw=4:et
 {
-    // splitv split container with 2 children
     "border": "pixel",
     "floating": "auto_off",
     "layout": "splitv",
@@ -22,9 +20,7 @@
             "swallows": [
                {
                "class": "^URxvt$",
-               "instance": "^urxvt$"
-               //"title": "^p3pt@abnd:.*$"
-               //"transient_for": "^$"
+               "instance": "^neofetch$"
                }
             ],
             "type": "con"
@@ -44,9 +40,7 @@
             "swallows": [
                {
                "class": "^URxvt$",
-               "instance": "^urxvt$"
-               //"title": "^p3pt@abnd:.*$"
-               //"transient_for": "^$"
+               "instance": "^blank$"
                }
             ],
             "type": "con"
@@ -55,7 +49,6 @@
 }
 
 {
-    // splitv split container with 2 children
     "border": "pixel",
     "floating": "auto_off",
     "layout": "splitv",
@@ -63,7 +56,6 @@
     "type": "con",
     "nodes": [
         {
-            // splitv split container with 2 children
             "border": "pixel",
             "floating": "auto_off",
             "layout": "splitv",
@@ -85,9 +77,7 @@
                     "swallows": [
                        {
                        "class": "^URxvt$",
-                       "instance": "^urxvt$"
-                       //"title": "^p3pt@abnd:.*$"
-                       //"transient_for": "^$"
+                       "instance": "^ranger$"
                        }
                     ],
                     "type": "con"
@@ -107,9 +97,7 @@
                     "swallows": [
                        {
                        "class": "^URxvt$",
-                       "instance": "^urxvt$"
-                       //"title": "^p3pt@abnd:.*$"
-                       //"transient_for": "^$"
+                       "instance": "^clock$"
                        }
                     ],
                     "type": "con"
@@ -117,7 +105,6 @@
             ]
         },
         {
-            // splith split container with 2 children
             "border": "pixel",
             "floating": "auto_off",
             "layout": "splith",
@@ -139,9 +126,7 @@
                     "swallows": [
                        {
                        "class": "^URxvt$",
-                       "instance": "^urxvt$",
-                       "title": "^cmus.*$"
-                       //"transient_for": "^$"
+                       "instance": "^cmus$"
                        }
                     ],
                     "type": "con"
@@ -161,9 +146,7 @@
                     "swallows": [
                        {
                        "class": "^URxvt$",
-                       "instance": "^urxvt$",
-                       "title": "^cava$"
-                       //"transient_for": "^$"
+                       "instance": "^cava$"
                        }
                     ],
                     "type": "con"
