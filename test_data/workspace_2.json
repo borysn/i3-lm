@@ -139,8 +139,8 @@
                     "swallows": [
                        {
                        "class": "^URxvt$",
-                       "instance": "^urxvt$"
-                       //"title": "^p3pt@abnd:.*$"
+                       "instance": "^urxvt$",
+                       "title": "^cmus.*$"
                        //"transient_for": "^$"
                        }
                     ],
@@ -161,8 +161,8 @@
                     "swallows": [
                        {
                        "class": "^URxvt$",
-                       "instance": "^urxvt$"
-                       //"title": "^p3pt@abnd:.*$"
+                       "instance": "^urxvt$",
+                       "title": "^cava$"
                        //"transient_for": "^$"
                        }
                     ],

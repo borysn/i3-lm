@@ -9,10 +9,10 @@
  * i.e.
  *
  * save the workspace 2 layout
- * $ i3-lm -s 2
+ * $ i3-lm s 2
  *
  * load a layout to workspace 4
- * $ i3-lm -l 4 layout.json
+ * $ i3-lm l 4 layout.json
  *
  * display help
  * $ i3-lm -h 
@@ -104,12 +104,12 @@ const chalk = require('chalk');
    *
    */
   var restoreUrxvt = () => {
-    let cmd = '$(urxvt &)';
-    cmd += ' && $(urxvt &)';
-    cmd += ' && $(urxvt &)';
-    cmd += ' && $(urxvt &)';
-    cmd += ' && $(urxvt &)';
-    cmd += ' && $(urxvt &)';
+    let cmd = '$(urxvt -e bash -c "neofetch && bash" &)';
+    cmd += ' && $(urxvt -e bash -c "ls -la && bash" &)';
+    cmd += ' && $(urxvt -e bash -c "ranger && bash" &)';
+    cmd += ' && $(urxvt -e bash -c "tty-clock -c -C 6 -t && bash" &)';
+    cmd += ' && $(urxvt -e bash -c "cmus && bash" &)';
+    cmd += ' && $(urxvt -e bash -c "cava && bash" &)';
     execSync(cmd);
   }
 
