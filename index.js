@@ -104,12 +104,12 @@ const chalk = require('chalk');
    *
    */
   var restoreUrxvt = () => {
-    let cmd = '$(urxvt -e bash -c "neofetch && bash" &)';
-    cmd += ' && $(urxvt -e bash -c "ls -la && bash" &)';
-    cmd += ' && $(urxvt -e bash -c "ranger && bash" &)';
-    cmd += ' && $(urxvt -e bash -c "tty-clock -c -C 6 -t && bash" &)';
-    cmd += ' && $(urxvt -e bash -c "cmus && bash" &)';
-    cmd += ' && $(urxvt -e bash -c "cava && bash" &)';
+    let cmd = 'i3-msg exec urxvt';
+    cmd += '&& i3-msg exec urxvt';
+    cmd += '&& i3-msg exec urxvt';
+    cmd += '&& i3-msg exec urxvt';
+    cmd += '&& i3-msg exec "urxvt -e cmus"';
+    cmd += '&& i3-msg exec "urxvt -e cava"';
     execSync(cmd);
   }
 
