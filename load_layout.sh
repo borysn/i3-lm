@@ -9,10 +9,10 @@ NUM=$1
 
 i3-msg "workspace $NUM; append_layout $JSON"
 
-i3-msg exec urxvt
-i3-msg exec urxvt
-i3-msg exec urxvt
-i3-msg exec urxvt
-i3-msg exec "urxvt -e cmus"
-i3-msg exec "urxvt -e cava"
-
+$(urxvt &)
+$(urxvt &)
+$(urxvt &)
+$(urxvt &)
+$(urxvt -name cmus -e cmus &)
+$(urxvt -name cava -e cava &)
+ 
