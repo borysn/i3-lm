@@ -104,13 +104,30 @@ const chalk = require('chalk');
    *
    */
   var restoreUrxvt = () => {
-    let cmd = 'i3-msg exec urxvt';
-    cmd += '&& i3-msg exec urxvt';
-    cmd += '&& i3-msg exec urxvt';
-    cmd += '&& i3-msg exec urxvt';
-    cmd += '&& i3-msg exec "urxvt -e cmus"';
-    cmd += '&& i3-msg exec "urxvt -e cava"';
+    let apps = [];
+    apps.push({name:'neofetch', cmd:'neofetch'});
+    apps.push({name:'blank', cmd:'ls'});
+    apps.push({name:'ranger', cmd:'ranger'});
+    apps.push({name:'clock', cmd:'tty-clock -c -C 6 -t'});
+    apps.push({name:'cmus', cmd:'cmus'});
+    apps.push({name:'cava', cmd:'cava'});
+
+    let cmd = apps.map((a) => { 
+      return getUrxvtString(a.name, a.cmd, true); 
+    }).join(' && ');
+
     execSync(cmd);
+  }
+
+  /**
+   * getUrxvtString
+   *
+   */
+  var getUrxvtString = (name, cmd, bash) => {
+    if (bash)
+      return `(urxvt -name ${name} -e bash -c "${cmd} && bash" &)`.toString();
+    else
+      return `(urxvt -name ${name} -e ${cmd} &)`.toString(); 
   }
 
   /**
