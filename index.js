@@ -123,9 +123,9 @@ const chalk = require('chalk');
    * getUrxvtString
    *
    */
-  var getUrxvtString = (name, cmd, bash) => {
-    if (bash)
-      return `(urxvt -name ${name} -e bash -c "${cmd} && bash" &)`.toString();
+  var getUrxvtString = (name, cmd, zsh) => {
+    if (zsh)
+      return `(urxvt -name ${name} -e zsh -c "${cmd} && zsh" &)`.toString();
     else
       return `(urxvt -name ${name} -e ${cmd} &)`.toString(); 
   }
