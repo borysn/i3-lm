@@ -108,7 +108,7 @@ const chalk = require('chalk');
     apps.push({name:'neofetch', cmd:'neofetch'});
     apps.push({name:'blank', cmd:'ls'});
     apps.push({name:'ranger', cmd:'ranger'});
-    apps.push({name:'clock', cmd:'tty-clock -c -C 6 -t'});
+    apps.push({name:'clock', cmd:'tty-clock -c -C 2 -t'});
     apps.push({name:'cmus', cmd:'cmus'});
     apps.push({name:'cava', cmd:'cava'});
 
