@@ -105,7 +105,7 @@ const chalk = require('chalk');
    */
   var restoreUrxvt = () => {
     let apps = [];
-    apps.push({name:'neofetch', cmd:'neofetch --block_range 0 15'});
+    apps.push({name:'neofetch', cmd:'neofetch'});
     apps.push({name:'blank', cmd:'ls'});
     apps.push({name:'ranger', cmd:'ranger'});
     apps.push({name:'clock', cmd:'tty-clock -c -C 6 -t'});
