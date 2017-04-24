@@ -15,7 +15,7 @@
  * $ i3-lm l 4 layout.json
  *
  * display help
- * $ i3-lm -h 
+ * $ i3-lm -h
  *
  */
 
@@ -24,11 +24,12 @@ const path = require('path');
 const execSync = require('child_process').execSync;
 const script = require('commander');
 const chalk = require('chalk');
+const exceptions = require('./src/exceptions');
 
 (function() {
 
   // vars
-  const NUM_WORK_SPACES = 4;
+  const NUM_WORK_SPACES = 10;
   const USER_HOME = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
   const LAYOUTS_DIR = `${USER_HOME}/.config/i3/layouts`;
 
@@ -64,10 +65,17 @@ const chalk = require('chalk');
     .command('load <workspace> <file>')
     .alias('l')
     .action((workspace, file) => {
-      if (isValidWorkspace(workspace) && isValidFile(file)) {
-        load(workspace, path.resolve(file));
-      } else {
-        console.log(chalk.red('[Error] invalid file selected'));
+      console.log(`\n\n${file}\n\n`);
+      try {
+        if (isValidWorkspace(workspace) && isValidFile(file)) {
+          load(workspace, path.resolve(file));
+        }
+      } catch (e) {
+        if (e instanceof exceptions.INVALID_FILE_EXCEPTION) {
+          console.log(chalk.red('[Error] invalid file selected'));
+        } else if (e instanceof exceptions.INVALID_WORKSPACE_EXCEPTION) {
+          console.log(chalk.red('[Error] invalid workspace selected'));
+        }
       }
     });
 
@@ -96,7 +104,6 @@ const chalk = require('chalk');
   var save = (num) => {
     // save workspace using i3-save-tree cmd
     execSync(getSaveCmd(num));
-    console.log(`\n\n${LAYOUTS_DIR}/workspace_${num}.json\n\n`);
     // edit layout file
     editLayout(LAYOUTS_DIR + `/workspace_${num}.json`);
   };
@@ -177,8 +184,9 @@ const chalk = require('chalk');
   var isValidWorkspace = (workspace) => {
     if (!isNaN(workspace) && workspace > 0 && workspace <= NUM_WORK_SPACES) {
       return true;
+    } else {
+      throw new exceptions.INVALID_WORKSPACE_EXCEPTION();
     }
-    return false;
   };
 
   /**
@@ -194,7 +202,7 @@ const chalk = require('chalk');
       fs.accessSync(file, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK)
     } catch (e) {
       console.log(chalk.red('Cannot access file. Check path or permissions.'));
-      return false;
+      throw new exceptions.INVALID_FILE_EXCEPTION();
     }
     return true;
   };
