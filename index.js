@@ -28,10 +28,12 @@ const chalk = require('chalk');
 (function() {
 
   // vars
-  const numWorkspaces = 4;
+  const NUM_WORK_SPACES = 4;
+  const USER_HOME = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+  const LAYOUTS_DIR = `${USER_HOME}/.config/i3/layouts`;
 
   /**
-   * script version 
+   * script version
    */
   script.version('1.0.0');
 
@@ -92,9 +94,11 @@ const chalk = require('chalk');
    * save :: num => String
    */
   var save = (num) => {
+    // save workspace using i3-save-tree cmd
     execSync(getSaveCmd(num));
+    console.log(`\n\n${LAYOUTS_DIR}/workspace_${num}.json\n\n`);
     // edit layout file
-    editLayout(`~/.config/i3/layouts/workspace_${num}.json`);
+    editLayout(LAYOUTS_DIR + `/workspace_${num}.json`);
   };
 
   /**
@@ -112,8 +116,8 @@ const chalk = require('chalk');
     apps.push({name:'cmus', cmd:'cmus'});
     apps.push({name:'cava', cmd:'cava'});
 
-    let cmd = apps.map((a) => { 
-      return getUrxvtString(a.name, a.cmd, true); 
+    let cmd = apps.map((a) => {
+      return getUrxvtString(a.name, a.cmd, true);
     }).join(' && ');
 
     execSync(cmd);
@@ -127,7 +131,7 @@ const chalk = require('chalk');
     if (zsh)
       return `(urxvt -name ${name} -e zsh -c "${cmd} && zsh" &)`.toString();
     else
-      return `(urxvt -name ${name} -e ${cmd} &)`.toString(); 
+      return `(urxvt -name ${name} -e ${cmd} &)`.toString();
   }
 
   /**
@@ -153,11 +157,11 @@ const chalk = require('chalk');
           //.replace(/\/\/\s\"title\"/g, '"title"')
           //.replace(/\/\/\s\"transient_for\"/g, '"transient_for"');
 
-        fs.writeFile(f, data, 'utf8', (err) => {
+        fs.writeFile(file, data, 'utf8', (err) => {
             if (err) {
               console.log(chalk.red(`${err}`));
               process.exit(1);
-            } 
+            }
           });
       }
     });
@@ -171,7 +175,7 @@ const chalk = require('chalk');
    * isValidWorkspace :: num -> bool
    */
   var isValidWorkspace = (workspace) => {
-    if (!isNaN(workspace) && workspace > 0 && workspace <= numWorkspaces) {
+    if (!isNaN(workspace) && workspace > 0 && workspace <= NUM_WORK_SPACES) {
       return true;
     }
     return false;
@@ -185,7 +189,7 @@ const chalk = require('chalk');
    * isValidFile :: file -> bool
    */
   var isValidFile = (file) => {
-    // check exists/read/write 
+    // check exists/read/write
     try {
       fs.accessSync(file, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK)
     } catch (e) {
