@@ -2,6 +2,10 @@
 
 /**
  * i3-lm
+ * author: borysn
+ * license: MIT
+ *
+ *
  *
  * i3 layout manager
  * save and load i3 layouts
@@ -18,20 +22,17 @@
  * $ i3-lm -h
  *
  */
-
 const fs = require('fs');
 const path = require('path');
-const execSync = require('child_process').execSync;
 const script = require('commander');
 const chalk = require('chalk');
-const exceptions = require('./src/exceptions');
+const save = require('./src/save');
+const load = require('./src/load');
+const config = require('./src/config');
+const help = require('./src/config');
 
+// i3-lm
 (function() {
-
-  // vars
-  const NUM_WORK_SPACES = 10;
-  const USER_HOME = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
-  const LAYOUTS_DIR = `${USER_HOME}/.config/i3/layouts`;
 
   /**
    * script version
@@ -41,19 +42,14 @@ const exceptions = require('./src/exceptions');
   /**
    * save command
    *
-   * f(workspace#)
+   * f(workspace)
    */
   script
     .command('save <workspace>')
     .alias('s')
     .action((workspace) => {
-      // save
-      if (isValidWorkspace(workspace)) {
-        save(workspace);
-      } else {
-        console.log(chalk.red('[Error] invalid workspace selected'));
-        process.exit(1);
-      }
+      let s = new save();
+      s.exec(workspace);
     });
 
   /**
@@ -65,165 +61,9 @@ const exceptions = require('./src/exceptions');
     .command('load <workspace> <file>')
     .alias('l')
     .action((workspace, file) => {
-      console.log(`\n\n${file}\n\n`);
-      try {
-        if (isValidWorkspace(workspace) && isValidFile(file)) {
-          load(workspace, path.resolve(file));
-        }
-      } catch (e) {
-        if (e instanceof exceptions.INVALID_FILE_EXCEPTION) {
-          console.log(chalk.red('[Error] invalid file selected'));
-        } else if (e instanceof exceptions.INVALID_WORKSPACE_EXCEPTION) {
-          console.log(chalk.red('[Error] invalid workspace selected'));
-        }
-      }
+      let l = new load();
+      l.exec(workspace, path.resolve(file));
     });
-
-  /**
-   * load
-   *
-   * assuming num is a valid workspace number
-   * assuming file is a readable file
-   *
-   * load :: num, file => String
-   */
-  var load = (num, file) => {
-    // exec save command
-    execSync(getLoadCmd(num, file));
-    // restore
-    restoreUrxvt();
-  };
-
-  /**
-   * save
-   *
-   * assuming num is a valid workspace number
-   *
-   * save :: num => String
-   */
-  var save = (num) => {
-    // save workspace using i3-save-tree cmd
-    execSync(getSaveCmd(num));
-    // edit layout file
-    editLayout(LAYOUTS_DIR + `/workspace_${num}.json`);
-  };
-
-  /**
-   * restoreUrvxt
-   *
-   * restore urxvt busy layout
-   *
-   */
-  var restoreUrxvt = () => {
-    let apps = [];
-    apps.push({name:'neofetch', cmd:'neofetch'});
-    apps.push({name:'blank', cmd:'ls'});
-    apps.push({name:'ranger', cmd:'ranger'});
-    apps.push({name:'clock', cmd:'tty-clock -c -C 2 -t'});
-    apps.push({name:'cmus', cmd:'cmus'});
-    apps.push({name:'cava', cmd:'cava'});
-
-    let cmd = apps.map((a) => {
-      return getUrxvtString(a.name, a.cmd, true);
-    }).join(' && ');
-
-    execSync(cmd);
-  }
-
-  /**
-   * getUrxvtString
-   *
-   */
-  var getUrxvtString = (name, cmd, zsh) => {
-    if (zsh)
-      return `(urxvt -name ${name} -e zsh -c "${cmd} && zsh" &)`.toString();
-    else
-      return `(urxvt -name ${name} -e ${cmd} &)`.toString();
-  }
-
-  /**
-   * edit layout
-   *
-   */
-  var editLayout = (file) => {
-    // read file
-    fs.readFile(file, (err, fd) => {
-      if (err) {
-        console.log(chalk.red(`${err}`));
-        console.log(chalk.red('[Error] Cannot read file'));
-        process.exit(1);
-      } else {
-        // modify file contents & write
-        // replace "// " before "class"
-        // replace "// " before "instance"
-        // replace "// " before "title"
-        // replace "// " before "transient_for"
-        const data = fd.toString()
-          .replace(/\/\/\s\"class\"/g,'"class"')
-          .replace(/\/\/\s\"instance\"/g, '"instance"');
-          //.replace(/\/\/\s\"title\"/g, '"title"')
-          //.replace(/\/\/\s\"transient_for\"/g, '"transient_for"');
-
-        fs.writeFile(file, data, 'utf8', (err) => {
-            if (err) {
-              console.log(chalk.red(`${err}`));
-              process.exit(1);
-            }
-          });
-      }
-    });
-  };
-
-  /**
-   * isValidWorkspace
-   *
-   * f(num)
-   *
-   * isValidWorkspace :: num -> bool
-   */
-  var isValidWorkspace = (workspace) => {
-    if (!isNaN(workspace) && workspace > 0 && workspace <= NUM_WORK_SPACES) {
-      return true;
-    } else {
-      throw new exceptions.INVALID_WORKSPACE_EXCEPTION();
-    }
-  };
-
-  /**
-   * isValidFile
-   *
-   * f(file)
-   *
-   * isValidFile :: file -> bool
-   */
-  var isValidFile = (file) => {
-    // check exists/read/write
-    try {
-      fs.accessSync(file, fs.constants.F_OK | fs.constants.R_OK | fs.constants.W_OK)
-    } catch (e) {
-      console.log(chalk.red('Cannot access file. Check path or permissions.'));
-      throw new exceptions.INVALID_FILE_EXCEPTION();
-    }
-    return true;
-  };
-
-  /**
-   * getSaveCmd
-   *
-   * getSaveCmd :: num -> String
-   */
-  var getSaveCmd = (num) => {
-   return `i3-save-tree --workspace ${num} > ~/.config/i3/layouts/workspace_${num}.json`.toString();
-  };
-
-  /**
-   * getLoadCmd
-   *
-   * getLoadCmd :: num, file -> String
-   */
-  var getLoadCmd = (num, file) => {
-    return `i3-msg "workspace ${num}; append_layout ${file}"`.toString();
-  };
 
   /**
    * run script
