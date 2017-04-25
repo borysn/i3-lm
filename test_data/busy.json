@@ -121,7 +121,7 @@
                        "x": 0,
                        "y": 0
                     },
-                    "name": "cmus v2.7.1",
+                    "name": "^cmus",
                     "percent": 0.5,
                     "swallows": [
                        {
